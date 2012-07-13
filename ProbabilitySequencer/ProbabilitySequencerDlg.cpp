@@ -74,7 +74,7 @@ BEGIN_MESSAGE_MAP(CProbabilitySequencerDlg, CDialog)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_ADD_TRACK, &CProbabilitySequencerDlg::OnBnClickedAddTrack)
 	// TODO: add messages for all buttons
-	ON_CONTROL_RANGE(BN_CLICKED, baseBtnId + MuteBtnIdBegin,  baseBtnId + MuteBtnIdEnd, OnMuteButton)
+	ON_CONTROL_RANGE(BN_CLICKED, baseBtnId + MuteBtnIdBegin,  baseBtnId + MuteBtnIdEnd, &CProbabilitySequencerDlg::OnMuteButton)
 END_MESSAGE_MAP()
 
 
@@ -169,13 +169,25 @@ void CProbabilitySequencerDlg::OnBnClickedAddTrack()
 	itoa(tracks.size()+1, &a, 10);
 	tracks.push_back(a);
 
+	CRect rect1;
+	GetDlgItem(IDC_ADD_TRACK)->GetWindowRect(&rect1);
+	ScreenToClient(&rect1);
+	// move "Add Track" down
+	GetDlgItem(IDC_ADD_TRACK)->SetWindowPos(NULL, rect1.left, rect1.top+25+2, 0, 0, SWP_NOSIZE|SWP_NOZORDER);
+	
+	// Create track buttons
 	// TODO: Create track buttons and add them to the form
-	int y = 
-	int x = 
+	int y = rect1.top;
+	int x = rect1.left;
 	UINT baseId = baseBtnId + tracks.size();
 	
 	CButton btnMute;
+	CRect rect = CRect(x, y, x+25, y+25);
 	btnMute.Create("M", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, rect, this, baseId + MuteBtnIdBegin);
+	btnMute.ShowWindow(TRUE);
+}
 
+void CProbabilitySequencerDlg::OnMuteButton( UINT nID )
+{
 
 }
