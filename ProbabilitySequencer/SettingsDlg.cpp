@@ -11,20 +11,20 @@ extern int beatPeriod;
 
 // диалоговое окно SettingsDlg
 
-IMPLEMENT_DYNAMIC(SettingsDlg, CDialog)
+IMPLEMENT_DYNAMIC(CSettingsDlg, CDialog)
 
-SettingsDlg::SettingsDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(SettingsDlg::IDD, pParent)
+CSettingsDlg::CSettingsDlg(CWnd* pParent /*=NULL*/)
+	: CDialog(CSettingsDlg::IDD, pParent)
 {
 	if (beatPeriod) m_bpm = 60000/beatPeriod;
 	else m_bpm = 120;
 }
 
-SettingsDlg::~SettingsDlg()
+CSettingsDlg::~CSettingsDlg()
 {
 }
 
-void SettingsDlg::DoDataExchange(CDataExchange* pDX)
+void CSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_BPM, m_bpm);
@@ -33,16 +33,16 @@ void SettingsDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(SettingsDlg, CDialog)
-	ON_EN_CHANGE(IDC_EDIT_BPM, &SettingsDlg::OnEnChangeEditBpm)
-	ON_CBN_KILLFOCUS(IDC_COMBO_DEVICE_SELECT, &SettingsDlg::OnCbnKillfocusComboDeviceSelect)
-	ON_CBN_CLOSEUP(IDC_COMBO_DEVICE_SELECT, &SettingsDlg::OnCbnCloseupComboDeviceSelect)
+BEGIN_MESSAGE_MAP(CSettingsDlg, CDialog)
+	ON_EN_CHANGE(IDC_EDIT_BPM, &CSettingsDlg::OnEnChangeEditBpm)
+	ON_CBN_KILLFOCUS(IDC_COMBO_DEVICE_SELECT, &CSettingsDlg::OnCbnKillfocusComboDeviceSelect)
+	ON_CBN_CLOSEUP(IDC_COMBO_DEVICE_SELECT, &CSettingsDlg::OnCbnCloseupComboDeviceSelect)
 END_MESSAGE_MAP()
 
 
 // обработчики сообщений SettingsDlg
 
-BOOL SettingsDlg::OnInitDialog() 
+BOOL CSettingsDlg::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
 
@@ -64,19 +64,19 @@ BOOL SettingsDlg::OnInitDialog()
 }
 
 
-void SettingsDlg::OnEnChangeEditBpm()
+void CSettingsDlg::OnEnChangeEditBpm()
 {
 	UpdateData();
 	if (m_bpm > 0)
 		beatPeriod = (int)(60000/m_bpm);
 }
 
-void SettingsDlg::OnCbnKillfocusComboDeviceSelect()
+void CSettingsDlg::OnCbnKillfocusComboDeviceSelect()
 {
 	portId = m_comboBoxDeviceSelect.GetCurSel();
 }
 
-void SettingsDlg::OnCbnCloseupComboDeviceSelect()
+void CSettingsDlg::OnCbnCloseupComboDeviceSelect()
 {
 	portId = m_comboBoxDeviceSelect.GetCurSel();
 }

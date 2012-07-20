@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "ProbabilitySequencer.h"
 #include "ProbabilitySequencerDlg.h"
+#include "SettingsDlg.h"
 #include "TrackData.h"
 #include <vector>
 
@@ -100,6 +101,7 @@ BEGIN_MESSAGE_MAP(CProbabilitySequencerDlg, CDialog)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_MEMORY_1, IDC_MEMORY_0, OnMemoryButton)
 	ON_WM_CREATE()
 	ON_BN_CLICKED(IDC_STORE, &CProbabilitySequencerDlg::OnBnClickedStore)
+	ON_COMMAND(ID_SETTINGS, &CProbabilitySequencerDlg::OnSettings)
 END_MESSAGE_MAP()
 
 
@@ -420,4 +422,16 @@ void CProbabilitySequencerDlg::OnBnClickedStore()
 {
 	storeMode = !storeMode;
 	// change color of the Store Button here
+}
+
+//-------------------------------------------------
+// IDR_INTERFACE_MENU delegate methods
+
+void CProbabilitySequencerDlg::OnSettings()
+{
+	CSettingsDlg sd;
+	sd.DoModal();
+	//CSettingsDlg *sd = new CSettingsDlg;
+	//sd->Create(IDD_SETTINGS_DLG, this);
+    //sd->ShowWindow(SW_SHOW);
 }

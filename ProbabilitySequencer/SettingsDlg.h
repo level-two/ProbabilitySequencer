@@ -4,13 +4,13 @@
 
 // диалоговое окно SettingsDlg
 
-class SettingsDlg : public CDialog
+class CSettingsDlg : public CDialog
 {
-	DECLARE_DYNAMIC(SettingsDlg)
+	DECLARE_DYNAMIC(CSettingsDlg)
 
 public:
-	SettingsDlg(CWnd* pParent = NULL);   // стандартный конструктор
-	virtual ~SettingsDlg();
+	CSettingsDlg(CWnd* pParent = NULL);   // стандартный конструктор
+	virtual ~CSettingsDlg();
 
 // Данные диалогового окна
 	enum { IDD = IDD_SETTINGS_DLG };

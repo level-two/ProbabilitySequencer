@@ -40,13 +40,14 @@
 #define ID_FILE                         32774
 #define ID_FILE_LOADTRACK               32775
 #define ID_FILE_SAVETRACK               32776
+#define ID_SETTINGS                     32777
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        133
-#define _APS_NEXT_COMMAND_VALUE         32777
+#define _APS_NEXT_RESOURCE_VALUE        134
+#define _APS_NEXT_COMMAND_VALUE         32778
 #define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
