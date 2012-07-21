@@ -19,35 +19,40 @@ public:
 	void SaveMuteState(int memoryCell) { if (memoryCell<11) muteStore[memoryCell]=muted; }
 	void RestoreMuteState(int memoryCell) { if (memoryCell<11) muted=muteStore[memoryCell]; }
 
-	int  GetTrackId(void) { return trackId; }
-	void SetTrackId(int tId) { trackId=tId; }
+	int    GetTrackId(void) { return trackId; }
+	void   SetTrackId(int tId) { trackId=tId; }
 
-	int  GetVolume(void) { return volume; }
-	void SetVolume(int v) { volume=v; }
+	int    GetVolume(void) { return volume; }
+	void   SetVolume(int v) { volume=v; }
 
-	int  GetStep(void) { return step; }
-	void SetStep(int s) { step=s; }
+	int    GetChannel(void) { return channel; }
+	void   SetChannel(int c) { channel=c; }
 
-	int  GetChannel(void) { return channel; }
-	void SetChannel(int c) { channel=c; }
+	string GetStep(void) { return step; }
+	void   SetStep(string s) { step=s; }
 
-	int  GetNote(void) { return note; }
-	void SetNote(int n) { note=n; }
+	string GetNote(void) { return note; }
+	void   SetNote(string n) { note=n; }
 
-	int  GetNoteLengthe(void) { return noteLength; }
-	void SetNoteLength(int nl) { noteLength=nl; }
+	string GetTrackLength(void) { return trackLength; }
+	void   SetTrackLength(string tl) { trackLength=tl; }
+
+	string GetNoteLength(void) { return noteLength; }
+	void   SetNoteLength(string nl) { noteLength=nl; }
 
 	string GetTrackName() { return trackName; }
-	void SetTrackName(string tn) { trackName=tn; }
+	void   SetTrackName(string tn) { trackName=tn; }
 
 private:
 	int trackId;
 	int length;
-	int step;
 	int channel;
-	int note;
-	int noteLength;
 	int volume;
-	bool muted, muteStore[11];
+	string step;
+	string note;
+	string noteLength;
+	string trackLength;
 	string trackName;
+
+	bool muted, muteStore[11];
 };

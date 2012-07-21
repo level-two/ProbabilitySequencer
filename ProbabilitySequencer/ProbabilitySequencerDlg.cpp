@@ -5,6 +5,7 @@
 #include "ProbabilitySequencer.h"
 #include "ProbabilitySequencerDlg.h"
 #include "SettingsDlg.h"
+#include "TrackEditDlg.h"
 #include "TrackData.h"
 #include <vector>
 
@@ -102,6 +103,7 @@ BEGIN_MESSAGE_MAP(CProbabilitySequencerDlg, CDialog)
 	ON_WM_CREATE()
 	ON_BN_CLICKED(IDC_STORE, &CProbabilitySequencerDlg::OnBnClickedStore)
 	ON_COMMAND(ID_SETTINGS, &CProbabilitySequencerDlg::OnSettings)
+	ON_COMMAND(ID_FILE_NEWSESSION, &CProbabilitySequencerDlg::OnFileNewsession)
 END_MESSAGE_MAP()
 
 
@@ -208,12 +210,7 @@ void CProbabilitySequencerDlg::AddTrack(unsigned int trackId)
 
 void CProbabilitySequencerDlg::CopyTrack(unsigned int trackId)
 {
-	int i=0;
-	for (; i<tracks.size(); i++) {
-		if (tracks[i]->GetTrackId() == trackId)
-			break;
-	}
-
+	int i = GetTrackIndex(trackId);
 	int newId = GetNextId(); // id of the last track + 1
 	CTrackData *track = new CTrackData(tracks[i]); // duplicate
 
@@ -223,13 +220,19 @@ void CProbabilitySequencerDlg::CopyTrack(unsigned int trackId)
 
 void CProbabilitySequencerDlg::DeleteTrack(unsigned int trackId)
 {
+	int i = GetTrackIndex(trackId);
+	delete tracks[i];
+	tracks.erase(tracks.begin()+i);
+}
+
+int CProbabilitySequencerDlg::GetTrackIndex(int trackId)
+{
 	int i=0;
 	for (; i<tracks.size(); i++) {
 		if (tracks[i]->GetTrackId() == trackId)
 			break;
 	}
-	delete tracks[i];
-	tracks.erase(tracks.begin()+i);
+	return i;
 }
 
 int CProbabilitySequencerDlg::GetNextId(void)
@@ -373,6 +376,10 @@ void CProbabilitySequencerDlg::OnButton(UINT nID)
 	else if (id >= TrackInfoBtnId)
 	{
 		// show modal dialog with track editing
+		int i = GetTrackIndex(trackId);
+		CTrackEditDlg dlg;
+		dlg.SetEditedTrack(tracks[i]);
+		dlg.DoModal();
 	}
 	else if (id >= SoloBtnId)
 	{
@@ -434,4 +441,14 @@ void CProbabilitySequencerDlg::OnSettings()
 	//CSettingsDlg *sd = new CSettingsDlg;
 	//sd->Create(IDD_SETTINGS_DLG, this);
     //sd->ShowWindow(SW_SHOW);
+}
+
+void CProbabilitySequencerDlg::OnFileNewsession()
+{
+	while(tracks.size()>0)
+	{
+		int id = tracks[0]->GetTrackId();
+		DeleteTrack(id);
+		DeleteButtons(id);
+	}
 }

@@ -2,7 +2,7 @@
 #include "TrackData.h"
 
 CTrackData::CTrackData(void)
-: volume(0),length(0),step(0),channel(0),note(0),noteLength(0),trackName("")
+: volume(127),length(4),step("1/2"),channel(1),note("C3"),trackLength("1"), noteLength("1/8"),trackName("New Track")
 {
 }
 

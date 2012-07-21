@@ -42,6 +42,7 @@ private:
 	void DeleteButtons(int trackId);
 	
 	int  FindButtonIndexWithId(int id);
+	int  GetTrackIndex(int trackId);
 	int  GetNextId(void);
 
 	void AddTrack(unsigned int trackId);
@@ -55,4 +56,5 @@ public:
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedStore();
 	afx_msg void OnSettings();
+	afx_msg void OnFileNewsession();
 };

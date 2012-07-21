@@ -222,6 +222,10 @@
 				RelativePath=".\TrackData.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\TrackEditDlg.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Заголовочные файлы"
@@ -254,6 +258,10 @@
 			</File>
 			<File
 				RelativePath=".\TrackData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TrackEditDlg.h"
 				>
 			</File>
 		</Filter>
