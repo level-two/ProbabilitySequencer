@@ -32,4 +32,11 @@ public:
 	CString m_Note;
 	CString m_NoteLength;
 	CString m_TrackName;
+	afx_msg void OnEnChangeTrackName();
+	afx_msg void OnEnChangePatternLength();
+	afx_msg void OnEnChangeStep();
+	afx_msg void OnEnChangeVolume();
+	afx_msg void OnEnChangeChannel();
+	afx_msg void OnEnChangeNote();
+	afx_msg void OnEnChangeNoteLength();
 };

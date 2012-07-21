@@ -40,13 +40,14 @@ private:
 	void MoveButton(CWnd* btn, int dy);
 	void AddButtons(int index, int newId);
 	void DeleteButtons(int trackId);
+	void UpdateButtons(void);
 	
 	int  FindButtonIndexWithId(int id);
 	int  GetTrackIndex(int trackId);
 	int  GetNextId(void);
 
 	void AddTrack(unsigned int trackId);
-	void CopyTrack(unsigned int trackId);
+	int  CopyTrack(unsigned int trackId);
 	void DeleteTrack(unsigned int trackId);
 private:
 	std::vector<CButton*> trackButtons;

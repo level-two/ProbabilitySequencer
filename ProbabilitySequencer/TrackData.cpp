@@ -9,8 +9,13 @@ CTrackData::CTrackData(void)
 
 CTrackData::CTrackData(CTrackData *td)
 {
-
-
+	SetTrackLength( td->GetTrackLength() );
+	SetChannel( td->GetChannel() );
+	SetVolume( td->GetVolume() );
+	SetStep( td->GetStep() );
+	SetNote( td->GetNote() );
+	SetNoteLength( td->GetNoteLength() );
+	SetTrackName( td->GetTrackName() );
 }
 
 CTrackData::~CTrackData(void)

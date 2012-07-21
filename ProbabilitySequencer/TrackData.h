@@ -29,19 +29,19 @@ public:
 	void   SetChannel(int c) { channel=c; }
 
 	string GetStep(void) { return step; }
-	void   SetStep(string s) { step=s; }
+	void   SetStep(string &s) { step=string(s); }
 
 	string GetNote(void) { return note; }
-	void   SetNote(string n) { note=n; }
+	void   SetNote(string &n) { note=string(n); }
 
 	string GetTrackLength(void) { return trackLength; }
-	void   SetTrackLength(string tl) { trackLength=tl; }
+	void   SetTrackLength(string &tl) { trackLength=string(tl); }
 
 	string GetNoteLength(void) { return noteLength; }
-	void   SetNoteLength(string nl) { noteLength=nl; }
+	void   SetNoteLength(string &nl) { noteLength=string(nl); }
 
 	string GetTrackName() { return trackName; }
-	void   SetTrackName(string tn) { trackName=tn; }
+	void   SetTrackName(string &tn) { trackName=string(tn); }
 
 private:
 	int trackId;

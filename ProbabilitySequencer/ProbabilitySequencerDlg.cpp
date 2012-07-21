@@ -205,10 +205,10 @@ void CProbabilitySequencerDlg::AddTrack(unsigned int trackId)
 
 	tracks.push_back(track);
 	track->SetTrackId(trackId);
-	track->SetTrackName("TrackName");
+	track->SetTrackName(string("TrackName"));
 }
 
-void CProbabilitySequencerDlg::CopyTrack(unsigned int trackId)
+int CProbabilitySequencerDlg::CopyTrack(unsigned int trackId)
 {
 	int i = GetTrackIndex(trackId);
 	int newId = GetNextId(); // id of the last track + 1
@@ -216,6 +216,8 @@ void CProbabilitySequencerDlg::CopyTrack(unsigned int trackId)
 
 	tracks.push_back(track);
 	track->SetTrackId(newId);
+
+	return newId;
 }
 
 void CProbabilitySequencerDlg::DeleteTrack(unsigned int trackId)
@@ -346,6 +348,19 @@ void CProbabilitySequencerDlg::DeleteButtons(int trackId)
 	}
 }
 
+void CProbabilitySequencerDlg::UpdateButtons(void)
+{
+	for (int i=0; i<tracks.size(); i++)
+	{
+		int id = tracks[i]->GetTrackId();
+		int index = FindButtonIndexWithId(baseBtnId+TrackInfoBtnId+id);
+		CString trackDescr = tracks[i]->GetTrackName().c_str();
+		trackButtons[index]->SetWindowTextA(trackDescr);
+
+		// update Mute and Solo state
+	}
+}
+
 //--------------------------------------------------
 // Button callbacks
 
@@ -354,6 +369,8 @@ void CProbabilitySequencerDlg::OnBnClickedAddTrack()
 	int newId = GetNextId();
 	AddTrack(newId);
 	AddButtons(FindButtonIndexWithId(IDC_ADD_TRACK), newId);
+
+	UpdateButtons();
 }
 
 void CProbabilitySequencerDlg::OnButton(UINT nID)
@@ -363,9 +380,9 @@ void CProbabilitySequencerDlg::OnButton(UINT nID)
 	
 	if (id >= DuplicateTrackBtnId)
 	{
-		int newId = GetNextId();
-		AddTrack(newId);
+		int newId = CopyTrack(trackId);
 		AddButtons(FindButtonIndexWithId(baseBtnId+MuteBtnId+trackId), newId);
+		UpdateButtons();
 	}
 	else if (id >= DeleteTrackBtnId)
 	{
@@ -380,6 +397,8 @@ void CProbabilitySequencerDlg::OnButton(UINT nID)
 		CTrackEditDlg dlg;
 		dlg.SetEditedTrack(tracks[i]);
 		dlg.DoModal();
+
+		UpdateButtons();
 	}
 	else if (id >= SoloBtnId)
 	{

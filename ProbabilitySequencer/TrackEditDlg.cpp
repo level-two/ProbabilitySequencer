@@ -43,6 +43,13 @@ void CTrackEditDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CTrackEditDlg, CDialog)
+	ON_EN_CHANGE(IDC_TRACK_NAME, &CTrackEditDlg::OnEnChangeTrackName)
+	ON_EN_CHANGE(IDC_PATTERN_LENGTH, &CTrackEditDlg::OnEnChangePatternLength)
+	ON_EN_CHANGE(IDC_STEP, &CTrackEditDlg::OnEnChangeStep)
+	ON_EN_CHANGE(IDC_VOLUME, &CTrackEditDlg::OnEnChangeVolume)
+	ON_EN_CHANGE(IDC_CHANNEL, &CTrackEditDlg::OnEnChangeChannel)
+	ON_EN_CHANGE(IDC_NOTE, &CTrackEditDlg::OnEnChangeNote)
+	ON_EN_CHANGE(IDC_NOTE_LENGTH, &CTrackEditDlg::OnEnChangeNoteLength)
 END_MESSAGE_MAP()
 
 
@@ -62,3 +69,45 @@ void CTrackEditDlg::SetEditedTrack(CTrackData *td)
 }
 
 // обработчики сообщений CTrackEditDlg
+
+void CTrackEditDlg::OnEnChangeTrackName()
+{
+	UpdateData();
+	editedTrack->SetTrackName( string(m_TrackName) );
+}
+
+void CTrackEditDlg::OnEnChangePatternLength()
+{
+	UpdateData();
+	editedTrack->SetTrackLength( string(m_Length) );
+}
+
+void CTrackEditDlg::OnEnChangeStep()
+{
+	UpdateData();
+	editedTrack->SetStep( string(m_Step) );
+}
+
+void CTrackEditDlg::OnEnChangeVolume()
+{
+	UpdateData();
+	editedTrack->SetVolume( m_Volume );
+}
+
+void CTrackEditDlg::OnEnChangeChannel()
+{
+	UpdateData();
+	editedTrack->SetChannel( m_Channel );
+}
+
+void CTrackEditDlg::OnEnChangeNote()
+{
+	UpdateData();
+	editedTrack->SetNote( string(m_Note) );
+}
+
+void CTrackEditDlg::OnEnChangeNoteLength()
+{
+	UpdateData();
+	editedTrack->SetNoteLength( string(m_NoteLength) );
+}
