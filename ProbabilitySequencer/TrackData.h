@@ -28,17 +28,17 @@ public:
 	int    GetChannel(void) { return channel; }
 	void   SetChannel(int c) { channel=c; }
 
-	string GetStep(void) { return step; }
-	void   SetStep(string &s) { step=string(s); }
+	int    GetSteps(void) { return steps; }
+	void   SetSteps(int s) { steps=s; }
 
 	string GetNote(void) { return note; }
 	void   SetNote(string &n) { note=string(n); }
 
-	string GetTrackLength(void) { return trackLength; }
-	void   SetTrackLength(string &tl) { trackLength=string(tl); }
+	int    GetTrackLength(void) { return trackLength; }
+	void   SetTrackLength(int tl) { trackLength=tl; }
 
-	string GetNoteLength(void) { return noteLength; }
-	void   SetNoteLength(string &nl) { noteLength=string(nl); }
+	int    GetNoteLength(void) { return noteLength; }
+	void   SetNoteLength(int nl) { noteLength=nl; }
 
 	string GetTrackName() { return trackName; }
 	void   SetTrackName(string &tn) { trackName=string(tn); }
@@ -48,10 +48,10 @@ private:
 	int length;
 	int channel;
 	int volume;
-	string step;
+	int steps;
 	string note;
-	string noteLength;
-	string trackLength;
+	int noteLength;
+	int trackLength;
 	string trackName;
 
 	bool muted, muteStore[11];

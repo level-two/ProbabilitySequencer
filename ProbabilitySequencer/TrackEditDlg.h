@@ -21,16 +21,16 @@ protected:
 public:
 	void SetEditedTrack(CTrackData *td);
 
-
 private:
 	CTrackData *editedTrack;
+
 public:
-	CString m_Length;
-	CString m_Step;
+	int m_Length;
+	int m_Steps;
 	int m_Volume;
 	int m_Channel;
 	CString m_Note;
-	CString m_NoteLength;
+	int m_NoteLength;
 	CString m_TrackName;
 	afx_msg void OnEnChangeTrackName();
 	afx_msg void OnEnChangePatternLength();
@@ -39,4 +39,7 @@ public:
 	afx_msg void OnEnChangeChannel();
 	afx_msg void OnEnChangeNote();
 	afx_msg void OnEnChangeNoteLength();
+	afx_msg void OnPaint();
+	afx_msg void OnEnKillfocus();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
