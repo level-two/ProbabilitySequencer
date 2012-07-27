@@ -42,4 +42,5 @@ public:
 	afx_msg void OnPaint();
 	afx_msg void OnEnKillfocus();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -29,19 +30,23 @@ public:
 	void   SetChannel(int c) { channel=c; }
 
 	int    GetSteps(void) { return steps; }
-	void   SetSteps(int s) { steps=s; }
+	void   SetSteps(int s); // should update vector size
 
 	string GetNote(void) { return note; }
 	void   SetNote(string &n) { note=string(n); }
 
 	int    GetTrackLength(void) { return trackLength; }
-	void   SetTrackLength(int tl) { trackLength=tl; }
+	void   SetTrackLength(int tl); // should update vector size
 
 	int    GetNoteLength(void) { return noteLength; }
 	void   SetNoteLength(int nl) { noteLength=nl; }
 
 	string GetTrackName() { return trackName; }
 	void   SetTrackName(string &tn) { trackName=string(tn); }
+
+	//..............
+	float  GetValue(int pos) { if (pos<values.size()) return values[pos]; return 0; }
+	void   SetValue(int pos, float val) { if (pos<values.size()) values[pos]=val;}
 
 private:
 	int trackId;
@@ -55,4 +60,8 @@ private:
 	string trackName;
 
 	bool muted, muteStore[11];
+	vector<float> values;
+
+	// private procedures
+	void UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int newLen);
 };

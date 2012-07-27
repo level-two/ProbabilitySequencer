@@ -1,9 +1,13 @@
 #include "StdAfx.h"
 #include "TrackData.h"
+#include "Math.h"
 
 CTrackData::CTrackData(void)
-: volume(127),length(4),steps(2),channel(1),note("C3"),trackLength(1), noteLength(1),trackName("New Track")
+: volume(127),length(4),steps(1),channel(1),note("C3"),trackLength(1),noteLength(1),trackName("New Track")
 {
+	values.push_back(0.0); // initialization for len=1, steps=1;
+	SetTrackLength(4); // re-set for len=4, steps=2
+	SetSteps(2);
 }
 
 
@@ -22,7 +26,68 @@ CTrackData::~CTrackData(void)
 {
 }
 
+void CTrackData::SetSteps(int s)
+{
+	UpdateVectorSize(steps, s, trackLength, trackLength);
+	steps=s;
+}
 
+void CTrackData::SetTrackLength(int tl)
+{
+	UpdateVectorSize(steps, steps, trackLength, tl);
+	trackLength=tl;
+}
+
+
+void CTrackData::UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int newLen)
+{
+	if (newLen>prevLen)
+	{
+		for (int i=values.size(); i<newLen*steps; i++)
+			values.push_back(0.0);
+	}
+
+	float dummy;
+	if (newSteps!=prevSteps)
+	{
+		if ( newSteps>prevSteps && modf(newSteps/prevSteps, &dummy) == 0)
+		{
+			for (int j=values.size()-1; j>0; j--) {
+				values.insert(values.begin()+j, newSteps/prevSteps-1, 0.0);
+			}
+
+			for (int i=0; i<newSteps/prevSteps-1; i++) {
+				values.push_back(0.0);
+			}
+		}
+		else if ( newSteps<prevSteps && modf(prevSteps/newSteps, &dummy) == 0)
+		{
+			int j=0;
+			while (j<values.size()) {
+				values.erase(values.begin()+j, values.begin()+j+prevSteps/newSteps-1);
+				j++;
+			}
+		}
+		else
+		{
+			// delete 
+			int j=0;
+			while (j<values.size()) {
+				values.erase(values.begin()+j, values.begin()+j+prevSteps-1);
+				j++;
+			}
+
+			// add
+			for (int j=values.size()-1; j>0; j--) {
+				values.insert(values.begin()+j, newSteps, 0.0);
+			}
+
+			for (int i=0; i<newSteps; i++) {
+				values.push_back(0.0);
+			}
+		}
+	}
+}
 void CTrackData::Update()
 {
 

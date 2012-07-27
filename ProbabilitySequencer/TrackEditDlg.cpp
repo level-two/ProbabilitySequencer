@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "ProbabilitySequencer.h"
 #include "TrackEditDlg.h"
-
+#include <math.h>
 
 // диалоговое окно CTrackEditDlg
 
@@ -58,6 +58,7 @@ BEGIN_MESSAGE_MAP(CTrackEditDlg, CDialog)
 	ON_EN_KILLFOCUS(IDC_STEP, &CTrackEditDlg::OnEnKillfocus)
 	ON_EN_KILLFOCUS(IDC_NOTE_LENGTH, &CTrackEditDlg::OnEnKillfocus)
 	ON_WM_TIMER()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 
@@ -133,20 +134,24 @@ void CTrackEditDlg::OnEnChangeNoteLength()
 #define Y 110
 #define XX 400
 #define YY 250
+#define RADIUS 5
 
 void CTrackEditDlg::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 
-	COLORREF qLineColor = RGB(255,255,255);
-	CPen qLinePen(PS_SOLID, 1, qLineColor);
-	dc.SelectObject(&qLinePen);
+	COLORREF qLineColor1 = RGB(255,255,255);
+	CPen qLinePen1(PS_SOLID, 1, qLineColor1);
+	COLORREF qLineColor2 = RGB(0,0,0);
+	CPen qLinePen3(PS_SOLID, 1, qLineColor2);
+	COLORREF qLineColor3 = RGB(150,150,150);
+	CPen qLinePen2(PS_SOLID, 1, qLineColor3);
+
+	dc.SelectObject(&qLinePen1);
 
 	dc.Rectangle(X,Y,XX,YY);
 
-	COLORREF qLineColor1 = RGB(0,0,0);
-	CPen qLinePen1(PS_SOLID, 1, qLineColor1);
-	dc.SelectObject(&qLinePen1);
+	dc.SelectObject(&qLinePen2);
 	dc.Rectangle(X-1, (Y+YY)/2, XX, (Y+YY)/2+1);
 
 	int length = editedTrack->GetTrackLength();
@@ -156,9 +161,7 @@ void CTrackEditDlg::OnPaint()
 
 	for (int i=0; i<length*steps; i++)
 	{
-		COLORREF qLineColor2 = RGB(100,100,100);
-		CPen qLinePen2(PS_SOLID, 1, qLineColor2);
-		dc.SelectObject(&qLinePen2);
+		dc.SelectObject(&qLinePen3);
 
 		if (i%steps == 0) {
 			dc.Rectangle(x-1,Y,x+1,YY);
@@ -167,15 +170,15 @@ void CTrackEditDlg::OnPaint()
 			dc.Rectangle(x,Y,x+1,YY);
 		}
 
-		float p = rand()%10 / 10.0;
+		// float p = rand()%10 / 10.0;
+		float p = editedTrack->GetValue(i);
 		int yp = YY-(YY-Y)*p;
 
-		COLORREF qLineColor3 = RGB(0,0,0);
-		CPen qLinePen3(PS_SOLID, 1, qLineColor3);
-		dc.SelectObject(&qLinePen3);
+		dc.SelectObject(&qLinePen2);
 
 		dc.Rectangle(x-2,yp,x+2,YY);
-		dc.Ellipse(x-5,yp-5,x+5,yp+5);
+		int r = RADIUS;
+		dc.Ellipse(x-r,yp-r,x+r,yp+r);
 
 		x+=dx;
 	}
@@ -194,4 +197,22 @@ void CTrackEditDlg::OnTimer(UINT_PTR nIDEvent)
 
 	RedrawWindow();
 	CDialog::OnTimer(nIDEvent);
+}
+
+void CTrackEditDlg::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// if (mouseButtonPressed)
+	if (point.x > X && point.x < XX &&
+		point.y > Y && point.y < YY) 
+	{
+		float length = editedTrack->GetTrackLength();
+		float steps = editedTrack->GetSteps();
+		float pos = length*steps*(point.x - X)/(XX-X);
+		float value = (float)(YY - point.y)/(YY-Y);
+		editedTrack->SetValue(floor(pos+0.5),value);
+		int r = RADIUS;
+		InvalidateRect(CRect(X-r,Y-r,XX+r,YY+r));
+		//UpdateWindow();
+	}
+	CDialog::OnMouseMove(nFlags, point);
 }
