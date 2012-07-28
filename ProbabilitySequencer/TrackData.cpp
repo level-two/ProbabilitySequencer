@@ -2,6 +2,13 @@
 #include "TrackData.h"
 #include "Math.h"
 
+bool CTrackData::isInt(float a)
+{
+	float dmy;
+	float res = modf(a,&dmy);
+	return res==0;
+}
+
 CTrackData::CTrackData(void)
 : volume(127),length(4),steps(1),channel(1),note("C3"),trackLength(1),noteLength(1),trackName("New Track")
 {
@@ -50,7 +57,7 @@ void CTrackData::UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int 
 	float dummy;
 	if (newSteps!=prevSteps)
 	{
-		if ( newSteps>prevSteps && modf(newSteps/prevSteps, &dummy) == 0)
+		if (/* newSteps>prevSteps && */isInt((float)newSteps/prevSteps))
 		{
 			for (int j=values.size()-1; j>0; j--) {
 				values.insert(values.begin()+j, newSteps/prevSteps-1, 0.0);
@@ -60,11 +67,11 @@ void CTrackData::UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int 
 				values.push_back(0.0);
 			}
 		}
-		else if ( newSteps<prevSteps && modf(prevSteps/newSteps, &dummy) == 0)
+		else if (/* newSteps<prevSteps && */isInt((float)prevSteps/newSteps))
 		{
 			int j=0;
 			while (j<values.size()) {
-				values.erase(values.begin()+j, values.begin()+j+prevSteps/newSteps-1);
+				values.erase(values.begin()+j+1, values.begin()+j+prevSteps/newSteps);
 				j++;
 			}
 		}

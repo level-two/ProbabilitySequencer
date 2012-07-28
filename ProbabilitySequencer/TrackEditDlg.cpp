@@ -20,7 +20,8 @@ CTrackEditDlg::CTrackEditDlg(CWnd* pParent /*=NULL*/)
 	, m_NoteLength(0)
 	, m_TrackName(_T(""))
 {
-
+	editedPos = -1;
+	mouseButtonPressed = false;
 }
 
 CTrackEditDlg::~CTrackEditDlg()
@@ -59,10 +60,11 @@ BEGIN_MESSAGE_MAP(CTrackEditDlg, CDialog)
 	ON_EN_KILLFOCUS(IDC_NOTE_LENGTH, &CTrackEditDlg::OnEnKillfocus)
 	ON_WM_TIMER()
 	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+	ON_WM_RBUTTONDOWN()
+	ON_WM_RBUTTONUP()
 END_MESSAGE_MAP()
-
-
-
 
 void CTrackEditDlg::SetEditedTrack(CTrackData *td)
 {
@@ -201,18 +203,63 @@ void CTrackEditDlg::OnTimer(UINT_PTR nIDEvent)
 
 void CTrackEditDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// if (mouseButtonPressed)
-	if (point.x > X && point.x < XX &&
-		point.y > Y && point.y < YY) 
+	if (mouseButtonPressed &&
+		point.x > X && point.x < XX &&
+		point.y > Y && point.y < YY)
 	{
-		float length = editedTrack->GetTrackLength();
-		float steps = editedTrack->GetSteps();
-		float pos = length*steps*(point.x - X)/(XX-X);
+		float pos;
+		if (editedPos>=0)
+		{
+			pos = editedPos;
+		}
+		else
+		{
+			float length = editedTrack->GetTrackLength();
+			float steps = editedTrack->GetSteps();
+			pos = length*steps*(point.x - X)/(XX-X);
+		}
+		
 		float value = (float)(YY - point.y)/(YY-Y);
 		editedTrack->SetValue(floor(pos+0.5),value);
 		int r = RADIUS;
 		InvalidateRect(CRect(X-r,Y-r,XX+r,YY+r));
-		//UpdateWindow();
 	}
 	CDialog::OnMouseMove(nFlags, point);
+}
+
+void CTrackEditDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	if (point.x > X && point.x < XX &&
+		point.y > Y && point.y < YY)
+	{
+		mouseButtonPressed = true;
+		float length = editedTrack->GetTrackLength();
+		float steps = editedTrack->GetSteps();
+		editedPos = length*steps*(point.x - X)/(XX-X)+0.5;
+	}
+	CDialog::OnLButtonDown(nFlags, point);
+}
+
+void CTrackEditDlg::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	mouseButtonPressed = false;
+	editedPos = -1;
+	CDialog::OnLButtonUp(nFlags, point);
+}
+
+void CTrackEditDlg::OnRButtonDown(UINT nFlags, CPoint point)
+{
+	if (point.x > X && point.x < XX &&
+		point.y > Y && point.y < YY)
+	{
+		mouseButtonPressed = true;
+		editedPos = -1;
+	}
+	CDialog::OnRButtonDown(nFlags, point);
+}
+
+void CTrackEditDlg::OnRButtonUp(UINT nFlags, CPoint point)
+{
+	mouseButtonPressed = false;
+	CDialog::OnRButtonUp(nFlags, point);
 }

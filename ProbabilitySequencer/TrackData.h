@@ -64,4 +64,5 @@ private:
 
 	// private procedures
 	void UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int newLen);
+	bool isInt(float a);
 };
