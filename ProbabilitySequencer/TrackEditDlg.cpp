@@ -126,6 +126,12 @@ void CTrackEditDlg::OnEnChangeNote()
 void CTrackEditDlg::OnEnChangeNoteLength()
 {
 	UpdateData();
+	float stepLen = TICKS_PER_BEAT/editedTrack->GetSteps();
+	if (m_NoteLength > stepLen)
+	{
+		m_NoteLength = stepLen;
+		UpdateData(false); 
+	}
 	editedTrack->SetNoteLength( m_NoteLength );
 
 	KillTimer(1);
@@ -235,7 +241,13 @@ void CTrackEditDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		mouseButtonPressed = true;
 		float length = editedTrack->GetTrackLength();
 		float steps = editedTrack->GetSteps();
-		editedPos = length*steps*(point.x - X)/(XX-X)+0.5;
+		editedPos = length*steps*(point.x - X)/(XX-X)+0.5;	
+
+		float value = (float)(YY - point.y)/(YY-Y);
+		editedTrack->SetValue(floor(editedPos+0.5),value);
+
+		int r = RADIUS;
+		InvalidateRect(CRect(X-r,Y-r,XX+r,YY+r));
 	}
 	CDialog::OnLButtonDown(nFlags, point);
 }
