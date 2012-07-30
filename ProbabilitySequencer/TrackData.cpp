@@ -15,6 +15,8 @@ CTrackData::CTrackData(void)
 	values.push_back(0.0); // initialization for len=1, steps=1;
 	SetTrackLength(4); // re-set for len=4, steps=2
 	SetSteps(2);
+
+	noteOnSent = false;
 }
 
 
@@ -104,4 +106,69 @@ void CTrackData::Mute(bool mute)
 {
 	muted = mute;
 	// send note off message here
+}
+
+void CTrackData::Tick(unsigned long ticks)
+{
+	bool shouldSendNoteOff = false;
+	bool shouldSendNoteOn  = false;
+
+	float stepLength = (float)TICKS_PER_BEAT/steps;
+	int tick = ticks - stepLength*floor(ticks/stepLength);
+
+	if (tick == 0)
+	{
+		int pos = ticks % (TICKS_PER_BEAT*length);
+		int noteIndex = floor(pos/stepLength);
+
+		float p = rand()%100 / 100.0;
+		
+		if ( p < values[noteIndex] )
+			shouldSendNoteOn = true;
+	}
+
+	if ((tick==noteLength) || (tick==0 && stepLength==noteLength))
+	{
+		if (noteOnSent)
+			shouldSendNoteOff = true;
+	}
+
+
+	/*
+	int pos = ticks % (TICKS_PER_BEAT*length);
+
+	int prevEvIndex = pos==0 ? TICKS_PER_BEAT : (pos-1)%TICKS_PER_BEAT;
+	int evIndex = pos%TICKS_PER_BEAT;
+
+	bool shouldSendNoteOff = false;
+	bool shouldSendNoteOn  = false;
+
+	if (prevEvIndex<=noteLength && evIndex>=noteLength && noteOnSent)
+	{
+		shouldSendNoteOff = true;
+	}
+
+	float stepLength = (float)TICKS_PER_BEAT/steps;
+	if (prevEvIndex<stepLength && evIndex>=stepLength)
+	{
+		int noteIndex = floor(pos/stepLength);
+		float p = rand()%100 / 100.0;
+		if ( p < values[noteIndex] )
+			shouldSendNoteOn = true;
+	}
+*/
+
+	if (shouldSendNoteOff)
+	{
+		noteOnSent = false;
+
+		// send NoteOff
+	}
+
+	if (shouldSendNoteOn)
+	{
+		noteOnSent = true;
+
+		// send NoteOn
+	}
 }

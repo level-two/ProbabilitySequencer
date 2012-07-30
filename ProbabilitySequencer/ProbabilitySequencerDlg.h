@@ -49,13 +49,18 @@ private:
 	void AddTrack(unsigned int trackId);
 	int  CopyTrack(unsigned int trackId);
 	void DeleteTrack(unsigned int trackId);
+
+	void UpdateTickTimer(void);
 private:
 	std::vector<CButton*> trackButtons;
 	bool soloMode;
 	bool storeMode;
+	int  portId;
+	UINT bpm;
 public:
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedStore();
 	afx_msg void OnSettings();
 	afx_msg void OnFileNewsession();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

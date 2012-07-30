@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#define TICKS_PER_BEAT 32
+
 using namespace std;
 
 class CTrackData
@@ -48,6 +50,11 @@ public:
 	float  GetValue(int pos) { if (pos<values.size()) return values[pos]; return 0; }
 	void   SetValue(int pos, float val) { if (pos<values.size()) values[pos]=val;}
 
+	//..............
+	void   SetBpm(int b) {bpm=b;}
+	int    GetBpm(void) {return bpm;}
+
+	void Tick(unsigned long ticks);
 private:
 	int trackId;
 	int length;
@@ -59,8 +66,11 @@ private:
 	int trackLength;
 	string trackName;
 
+	int bpm;
+
 	bool muted, muteStore[11];
 	vector<float> values;
+	bool noteOnSent;
 
 	// private procedures
 	void UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int newLen);

@@ -6,9 +6,6 @@
 #include "SettingsDlg.h"
 #include <mmsystem.h>
 
-extern int portId;
-extern int beatPeriod;
-
 // диалоговое окно SettingsDlg
 
 IMPLEMENT_DYNAMIC(CSettingsDlg, CDialog)
@@ -16,8 +13,6 @@ IMPLEMENT_DYNAMIC(CSettingsDlg, CDialog)
 CSettingsDlg::CSettingsDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CSettingsDlg::IDD, pParent)
 {
-	if (beatPeriod) m_bpm = 60000/beatPeriod;
-	else m_bpm = 120;
 }
 
 CSettingsDlg::~CSettingsDlg()
@@ -67,8 +62,8 @@ BOOL CSettingsDlg::OnInitDialog()
 void CSettingsDlg::OnEnChangeEditBpm()
 {
 	UpdateData();
-	if (m_bpm > 0)
-		beatPeriod = (int)(60000/m_bpm);
+//	if (m_bpm > 0)
+//		beatPeriod = (int)(60000/m_bpm);
 }
 
 void CSettingsDlg::OnCbnKillfocusComboDeviceSelect()
@@ -79,4 +74,10 @@ void CSettingsDlg::OnCbnKillfocusComboDeviceSelect()
 void CSettingsDlg::OnCbnCloseupComboDeviceSelect()
 {
 	portId = m_comboBoxDeviceSelect.GetCurSel();
+}
+
+void CSettingsDlg::SetPortId(int id)
+{
+	portId = id;
+	m_comboBoxDeviceSelect.SetCurSel(id);
 }

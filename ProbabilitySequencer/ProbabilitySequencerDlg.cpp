@@ -23,9 +23,7 @@ using namespace std;
 #define DuplicateTrackBtnId		5000
 #define LastBtnId				6000
 
-// global variables
-int portId;
-int beatPeriod;
+#define TICK_TIMER_ID			123
 
 std::vector<CTrackData*> tracks;
 
@@ -66,7 +64,7 @@ END_MESSAGE_MAP()
 
 
 CProbabilitySequencerDlg::CProbabilitySequencerDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CProbabilitySequencerDlg::IDD, pParent), storeMode(false), soloMode(false)
+	: CDialog(CProbabilitySequencerDlg::IDD, pParent), storeMode(false), soloMode(false), portId(0), bpm(120)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -104,6 +102,7 @@ BEGIN_MESSAGE_MAP(CProbabilitySequencerDlg, CDialog)
 	ON_BN_CLICKED(IDC_STORE, &CProbabilitySequencerDlg::OnBnClickedStore)
 	ON_COMMAND(ID_SETTINGS, &CProbabilitySequencerDlg::OnSettings)
 	ON_COMMAND(ID_FILE_NEWSESSION, &CProbabilitySequencerDlg::OnFileNewsession)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -142,6 +141,8 @@ BOOL CProbabilitySequencerDlg::OnInitDialog()
 	DWORD dwStyle = WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_NOTIFY;
 	addTrackButton->Create("+", dwStyle, CRect(11, 40, 36, 65), this, IDC_ADD_TRACK);
 	trackButtons.push_back(addTrackButton);
+	
+	UpdateTickTimer();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -456,7 +457,17 @@ void CProbabilitySequencerDlg::OnBnClickedStore()
 void CProbabilitySequencerDlg::OnSettings()
 {
 	CSettingsDlg sd;
+
+	sd.SetBpm(bpm);
+	sd.SetPortId(portId);
+
 	sd.DoModal();
+
+	bpm = sd.GetBpm();
+	portId = sd.GetPortId();
+
+	UpdateTickTimer();
+
 	//CSettingsDlg *sd = new CSettingsDlg;
 	//sd->Create(IDD_SETTINGS_DLG, this);
     //sd->ShowWindow(SW_SHOW);
@@ -470,4 +481,30 @@ void CProbabilitySequencerDlg::OnFileNewsession()
 		DeleteTrack(id);
 		DeleteButtons(id);
 	}
+}
+
+// tick timer routines
+
+void CProbabilitySequencerDlg::UpdateTickTimer(void)
+{
+	KillTimer(TICK_TIMER_ID);
+	float tickPeriod = 60000.0/(bpm*TICKS_PER_BEAT);
+	SetTimer(TICK_TIMER_ID,tickPeriod,NULL);
+}
+
+void CProbabilitySequencerDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	if (nIDEvent == TICK_TIMER_ID)
+	{
+		static ULONG ticks = 0;
+		//float tickPeriod = 60000.0/(bpm*TICKS_PER_BEAT);
+		//int ticks = (currTime-refTime)/tickPeriod;
+		for (int i=0; i<tracks.size(); i++)
+		{
+			tracks[i]->Tick(ticks);
+		}
+		ticks++;
+	}
+
+	CDialog::OnTimer(nIDEvent);
 }
