@@ -53,7 +53,6 @@ public:
 	void Tick(unsigned long ticks);
 private:
 	int trackId;
-	int length;
 	int channel;
 	int volume;
 	int steps;
@@ -62,11 +61,14 @@ private:
 	int trackLength;
 	string trackName;
 
-	bool muted, muteStore[11];
+	bool muted;
 	vector<float> values;
 	bool noteOnSent;
 
 	// private procedures
 	void UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int newLen);
 	bool isInt(float a);
+
+protected:
+	bool muteStore[11];
 };

@@ -13,7 +13,7 @@ bool CTrackData::isInt(float a)
 }
 
 CTrackData::CTrackData(void)
-: volume(127),length(4),steps(1),channel(1),note(96),trackLength(1),noteLength(1),trackName("New Track")
+: volume(127),steps(1),channel(1),note(96),trackLength(1),noteLength(1),trackName("New Track")
 {
 	values.push_back(0.0); // initialization for len=1, steps=1;
 	SetTrackLength(4); // re-set for len=4, steps=2
@@ -25,6 +25,10 @@ CTrackData::CTrackData(void)
 
 CTrackData::CTrackData(CTrackData *td)
 {
+	trackLength = 1;
+	steps = 1;
+	values.push_back(0.0); // initialization for len=1, steps=1;
+
 	SetTrackLength( td->GetTrackLength() );
 	SetChannel( td->GetChannel() );
 	SetVolume( td->GetVolume() );
@@ -32,6 +36,16 @@ CTrackData::CTrackData(CTrackData *td)
 	SetNote( td->GetNote() );
 	SetNoteLength( td->GetNoteLength() );
 	SetTrackName( td->GetTrackName() );
+
+	int n = td->GetTrackLength() * td->GetSteps();
+	for (int i=0; i<n; i++)
+		SetValue(i,td->GetValue(i));
+
+	Mute(td->isMuted());
+	for (int i=0; i<11; i++)
+		muteStore[i]=td->muteStore[i];
+
+	noteOnSent = false;
 }
 
 CTrackData::~CTrackData(void)
@@ -121,7 +135,7 @@ void CTrackData::Tick(unsigned long ticks)
 
 	if (tick == 0)
 	{
-		int pos = ticks % (TICKS_PER_BEAT*length);
+		int pos = ticks % (TICKS_PER_BEAT*trackLength);
 		int noteIndex = floor(pos/stepLength);
 
 		float p = rand()%100 / 100.0;
