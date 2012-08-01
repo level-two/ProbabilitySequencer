@@ -141,7 +141,10 @@ void CTrackData::Tick(unsigned long ticks)
 		float p = rand()%100 / 100.0;
 		
 		if ( p < values[noteIndex] )
+		{
+			shouldSendNoteOff = true; // switch note off and then on
 			shouldSendNoteOn = true;
+		}
 	}
 
 	if ((tick==noteLength) || (tick==0 && stepLength==noteLength))
