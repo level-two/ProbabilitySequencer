@@ -34,8 +34,8 @@ public:
 	int    GetSteps(void) { return steps; }
 	void   SetSteps(int s); // should update vector size
 
-	string GetNote(void) { return note; }
-	void   SetNote(string &n) { note=string(n); }
+	int    GetNote(void) { return note; }
+	void   SetNote(int n) { note=n; }
 
 	int    GetTrackLength(void) { return trackLength; }
 	void   SetTrackLength(int tl); // should update vector size
@@ -46,14 +46,10 @@ public:
 	string GetTrackName() { return trackName; }
 	void   SetTrackName(string &tn) { trackName=string(tn); }
 
-	//..............
 	float  GetValue(int pos) { if (pos<values.size()) return values[pos]; return 0; }
 	void   SetValue(int pos, float val) { if (pos<values.size()) values[pos]=val;}
 
 	//..............
-	void   SetBpm(int b) {bpm=b;}
-	int    GetBpm(void) {return bpm;}
-
 	void Tick(unsigned long ticks);
 private:
 	int trackId;
@@ -61,12 +57,10 @@ private:
 	int channel;
 	int volume;
 	int steps;
-	string note;
+	int note;
 	int noteLength;
 	int trackLength;
 	string trackName;
-
-	int bpm;
 
 	bool muted, muteStore[11];
 	vector<float> values;

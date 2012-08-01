@@ -16,7 +16,7 @@ CTrackEditDlg::CTrackEditDlg(CWnd* pParent /*=NULL*/)
 	, m_Steps(0)
 	, m_Volume(0)
 	, m_Channel(0)
-	, m_Note(_T(""))
+	, m_Note(0)
 	, m_NoteLength(0)
 	, m_TrackName(_T(""))
 {
@@ -74,7 +74,7 @@ void CTrackEditDlg::SetEditedTrack(CTrackData *td)
 	m_Channel = editedTrack->GetChannel();
 	m_Volume = editedTrack->GetVolume();
 	m_Steps = editedTrack->GetSteps();
-	m_Note = editedTrack->GetNote().c_str();
+	m_Note = editedTrack->GetNote();
 	m_NoteLength = editedTrack->GetNoteLength();
 	m_TrackName = editedTrack->GetTrackName().c_str();
 }
@@ -120,13 +120,14 @@ void CTrackEditDlg::OnEnChangeChannel()
 void CTrackEditDlg::OnEnChangeNote()
 {
 	UpdateData();
-	editedTrack->SetNote( string(m_Note) );
+	editedTrack->SetNote(m_Note);
 }
 
 void CTrackEditDlg::OnEnChangeNoteLength()
 {
 	UpdateData();
 	float stepLen = TICKS_PER_BEAT/editedTrack->GetSteps();
+
 	if (m_NoteLength > stepLen)
 	{
 		m_NoteLength = stepLen;

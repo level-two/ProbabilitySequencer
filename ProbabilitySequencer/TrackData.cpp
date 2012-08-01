@@ -1,6 +1,9 @@
 #include "StdAfx.h"
 #include "TrackData.h"
 #include "Math.h"
+#include "RtMidi.h"
+
+extern RtMidiOut *midiOut;
 
 bool CTrackData::isInt(float a)
 {
@@ -10,7 +13,7 @@ bool CTrackData::isInt(float a)
 }
 
 CTrackData::CTrackData(void)
-: volume(127),length(4),steps(1),channel(1),note("C3"),trackLength(1),noteLength(1),trackName("New Track")
+: volume(127),length(4),steps(1),channel(1),note(96),trackLength(1),noteLength(1),trackName("New Track")
 {
 	values.push_back(0.0); // initialization for len=1, steps=1;
 	SetTrackLength(4); // re-set for len=4, steps=2
@@ -133,42 +136,25 @@ void CTrackData::Tick(unsigned long ticks)
 			shouldSendNoteOff = true;
 	}
 
-
-	/*
-	int pos = ticks % (TICKS_PER_BEAT*length);
-
-	int prevEvIndex = pos==0 ? TICKS_PER_BEAT : (pos-1)%TICKS_PER_BEAT;
-	int evIndex = pos%TICKS_PER_BEAT;
-
-	bool shouldSendNoteOff = false;
-	bool shouldSendNoteOn  = false;
-
-	if (prevEvIndex<=noteLength && evIndex>=noteLength && noteOnSent)
-	{
-		shouldSendNoteOff = true;
-	}
-
-	float stepLength = (float)TICKS_PER_BEAT/steps;
-	if (prevEvIndex<stepLength && evIndex>=stepLength)
-	{
-		int noteIndex = floor(pos/stepLength);
-		float p = rand()%100 / 100.0;
-		if ( p < values[noteIndex] )
-			shouldSendNoteOn = true;
-	}
-*/
-
 	if (shouldSendNoteOff)
 	{
 		noteOnSent = false;
 
-		// send NoteOff
+		std::vector<unsigned char> message;
+		message.push_back(0x80+channel-1); // bits: 1000 chnl
+		message.push_back(note); // note
+		message.push_back(volume); // velocity
+		midiOut->sendMessage( &message );
 	}
 
 	if (shouldSendNoteOn)
 	{
 		noteOnSent = true;
-
-		// send NoteOn
+		
+		std::vector<unsigned char> message;
+		message.push_back(0x90+channel-1); // bits: 1001 chnl
+		message.push_back(note); // note
+		message.push_back(volume); // velocity
+		midiOut->sendMessage( &message );
 	}
 }

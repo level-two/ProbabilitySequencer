@@ -5,14 +5,19 @@
 #include "ProbabilitySequencer.h"
 #include "SettingsDlg.h"
 #include <mmsystem.h>
+#include "RtMidi.h"
+#include <string>
 
-// диалоговое окно SettingsDlg
+using namespace std;
+
+extern RtMidiOut *midiOut;
 
 IMPLEMENT_DYNAMIC(CSettingsDlg, CDialog)
 
 CSettingsDlg::CSettingsDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CSettingsDlg::IDD, pParent)
 {
+	portId = 0;
 }
 
 CSettingsDlg::~CSettingsDlg()
@@ -41,18 +46,20 @@ BOOL CSettingsDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	//m_bpm = 60000/beatPeriod;
-	
-	int num = midiOutGetNumDevs();
-	for (int i = 0; i < num; i++)
+	int nPorts = midiOut->getPortCount();
+	for (int i=0; i<nPorts; i++)
 	{
-		MIDIOUTCAPS caps;
-		midiOutGetDevCaps(i, &caps, sizeof(caps));
-
-		m_comboBoxDeviceSelect.AddString(caps.szPname);
+		try {
+			string portName = midiOut->getPortName(i);
+			m_comboBoxDeviceSelect.AddString(portName.c_str());
+		}
+		catch ( RtError &error ) {
+			error.printMessage();
+		}
 	}
 
-	m_comboBoxDeviceSelect.SetCurSel(0);
+	if (portId > nPorts) portId = 0; // protection
+	m_comboBoxDeviceSelect.SetCurSel(portId);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -62,8 +69,6 @@ BOOL CSettingsDlg::OnInitDialog()
 void CSettingsDlg::OnEnChangeEditBpm()
 {
 	UpdateData();
-//	if (m_bpm > 0)
-//		beatPeriod = (int)(60000/m_bpm);
 }
 
 void CSettingsDlg::OnCbnKillfocusComboDeviceSelect()
@@ -74,10 +79,4 @@ void CSettingsDlg::OnCbnKillfocusComboDeviceSelect()
 void CSettingsDlg::OnCbnCloseupComboDeviceSelect()
 {
 	portId = m_comboBoxDeviceSelect.GetCurSel();
-}
-
-void CSettingsDlg::SetPortId(int id)
-{
-	portId = id;
-	m_comboBoxDeviceSelect.SetCurSel(id);
 }

@@ -8,6 +8,7 @@
 #include "TrackEditDlg.h"
 #include "TrackData.h"
 #include <vector>
+#include "RtMidi.h"
 
 using namespace std;
 
@@ -25,9 +26,9 @@ using namespace std;
 
 #define TICK_TIMER_ID			123
 
-std::vector<CTrackData*> tracks;
-
 // CAboutDlg dialog used for App About
+
+RtMidiOut *midiOut = NULL; // global
 
 class CAboutDlg : public CDialog
 {
@@ -67,6 +68,7 @@ CProbabilitySequencerDlg::CProbabilitySequencerDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CProbabilitySequencerDlg::IDD, pParent), storeMode(false), soloMode(false), portId(0), bpm(120)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	midiOut = NULL; // initialization of the global variable
 }
 
 CProbabilitySequencerDlg::~CProbabilitySequencerDlg()
@@ -81,6 +83,12 @@ CProbabilitySequencerDlg::~CProbabilitySequencerDlg()
 	{
 		delete tracks[tracks.size()-1];
 		tracks.pop_back();
+	}
+
+	if (midiOut)
+	{
+		midiOut->closePort();
+		delete midiOut;
 	}
 }
 
@@ -142,6 +150,17 @@ BOOL CProbabilitySequencerDlg::OnInitDialog()
 	addTrackButton->Create("+", dwStyle, CRect(11, 40, 36, 65), this, IDC_ADD_TRACK);
 	trackButtons.push_back(addTrackButton);
 	
+	// RtMidiOut constructor
+	try
+	{
+	  midiOut = new RtMidiOut();
+	  midiOut->openPort(portId);
+	}
+	catch (RtError &error)
+	{
+	  error.printMessage();
+	}
+
 	UpdateTickTimer();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -465,6 +484,20 @@ void CProbabilitySequencerDlg::OnSettings()
 
 	bpm = sd.GetBpm();
 	portId = sd.GetPortId();
+	
+	if (midiOut) {
+		midiOut->closePort();
+		delete midiOut;
+	}
+
+	// RtMidiOut constructor
+	try {
+	  midiOut = new RtMidiOut();
+	  midiOut->openPort(portId);
+	}
+	catch (RtError &error) {
+	  error.printMessage();
+	}
 
 	UpdateTickTimer();
 

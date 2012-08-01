@@ -31,7 +31,7 @@ public:
 	int m_Steps;
 	int m_Volume;
 	int m_Channel;
-	CString m_Note;
+	int m_Note;
 	int m_NoteLength;
 	CString m_TrackName;
 	afx_msg void OnEnChangeTrackName();

@@ -33,7 +33,7 @@ public:
 	UINT GetBpm(void) { return m_bpm; }
 	void SetBpm(UINT bpm) { m_bpm = bpm; }
 	int  GetPortId(void) { return portId; }
-	void SetPortId(int id);
+	void SetPortId(int id) { portId = id; }
 
 private:
 	int portId;

@@ -4,6 +4,8 @@
 #pragma once
 
 #include <vector>
+#include "TrackData.h"
+
 
 // CProbabilitySequencerDlg dialog
 class CProbabilitySequencerDlg : public CDialog
@@ -51,7 +53,9 @@ private:
 	void DeleteTrack(unsigned int trackId);
 
 	void UpdateTickTimer(void);
+
 private:
+	std::vector<CTrackData*> tracks;
 	std::vector<CButton*> trackButtons;
 	bool soloMode;
 	bool storeMode;
