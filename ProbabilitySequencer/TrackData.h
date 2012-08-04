@@ -69,6 +69,9 @@ private:
 	void UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int newLen);
 	bool isInt(float a);
 
+	// 
+	bool vectorSizeUpdating;
+
 protected:
 	bool muteStore[11];
 };

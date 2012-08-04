@@ -20,6 +20,7 @@ CTrackData::CTrackData(void)
 	SetSteps(2);
 
 	noteOnSent = false;
+	vectorSizeUpdating = false;
 }
 
 
@@ -67,6 +68,8 @@ void CTrackData::SetTrackLength(int tl)
 
 void CTrackData::UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int newLen)
 {
+	vectorSizeUpdating = true;
+
 	if (newLen>prevLen)
 	{
 		for (int i=values.size(); i<newLen*steps; i++)
@@ -99,20 +102,22 @@ void CTrackData::UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int 
 			// delete 
 			int j=0;
 			while (j<values.size()) {
-				values.erase(values.begin()+j, values.begin()+j+prevSteps-1);
+				values.erase(values.begin()+j+1, values.begin()+j+prevSteps);
 				j++;
 			}
 
 			// add
 			for (int j=values.size()-1; j>0; j--) {
-				values.insert(values.begin()+j, newSteps, 0.0);
+				values.insert(values.begin()+j, newSteps-1, 0.0);
 			}
 
-			for (int i=0; i<newSteps; i++) {
+			for (int i=0; i<newSteps-1; i++) {
 				values.push_back(0.0);
 			}
 		}
 	}
+
+	vectorSizeUpdating = false;
 }
 void CTrackData::Update()
 {
@@ -127,6 +132,9 @@ void CTrackData::Mute(bool mute)
 
 void CTrackData::Tick(unsigned long ticks)
 {
+	if (vectorSizeUpdating)
+		return;
+
 	bool shouldSendNoteOff = false;
 	bool shouldSendNoteOn  = false;
 
@@ -139,7 +147,7 @@ void CTrackData::Tick(unsigned long ticks)
 		int noteIndex = floor(pos/stepLength);
 
 		float p = rand()%100 / 100.0;
-		
+
 		if ( p < values[noteIndex] )
 		{
 			shouldSendNoteOff = true; // switch note off and then on
