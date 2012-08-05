@@ -132,8 +132,8 @@ void CTrackData::Mute(bool mute)
 
 void CTrackData::Tick(unsigned long ticks)
 {
-	if (vectorSizeUpdating)
-		return;
+	if (vectorSizeUpdating) return;
+	if (muted) return;
 
 	bool shouldSendNoteOff = false;
 	bool shouldSendNoteOn  = false;

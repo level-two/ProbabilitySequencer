@@ -378,7 +378,13 @@ void CProbabilitySequencerDlg::UpdateButtons(void)
 		trackButtons[index]->SetWindowTextA(trackDescr);
 
 		// update Mute and Solo state
+		index = FindButtonIndexWithId(baseBtnId+MuteBtnId+id);
+		bool muted = tracks[i]->isMuted();
+		CString muteTxt;
+		muteTxt.SetString(muted ? "M" : "En");
+		trackButtons[index]->SetWindowTextA(muteTxt);
 	}
+	trackButtons[trackButtons.size()-1]->SetWindowTextA("+");
 }
 
 //--------------------------------------------------
@@ -402,7 +408,6 @@ void CProbabilitySequencerDlg::OnButton(UINT nID)
 	{
 		int newId = CopyTrack(trackId);
 		AddButtons(FindButtonIndexWithId(baseBtnId+MuteBtnId+trackId), newId);
-		UpdateButtons();
 	}
 	else if (id >= DeleteTrackBtnId)
 	{
@@ -417,8 +422,6 @@ void CProbabilitySequencerDlg::OnButton(UINT nID)
 		CTrackEditDlg dlg;
 		dlg.SetEditedTrack(tracks[i]);
 		dlg.DoModal();
-
-		UpdateButtons();
 	}
 	else if (id >= SoloBtnId)
 	{
@@ -445,6 +448,7 @@ void CProbabilitySequencerDlg::OnButton(UINT nID)
 		CButton *muteBtn = (CButton*)GetDlgItem(nID);
 		//muteBtn-> change color here
 	}
+	UpdateButtons();
 }
 
 void CProbabilitySequencerDlg::OnMemoryButton(UINT nID)
