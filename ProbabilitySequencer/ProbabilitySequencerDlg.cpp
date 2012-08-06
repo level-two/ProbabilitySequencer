@@ -381,7 +381,7 @@ void CProbabilitySequencerDlg::UpdateButtons(void)
 		index = FindButtonIndexWithId(baseBtnId+MuteBtnId+id);
 		bool muted = tracks[i]->isMuted();
 		CString muteTxt;
-		muteTxt.SetString(muted ? "M" : "En");
+		muteTxt.SetString(muted ? "En" : "M");
 		trackButtons[index]->SetWindowTextA(muteTxt);
 	}
 	trackButtons[trackButtons.size()-1]->SetWindowTextA("+");
@@ -443,9 +443,9 @@ void CProbabilitySequencerDlg::OnButton(UINT nID)
 	}
 	else if (id >= MuteBtnId)
 	{
-		BOOL muted = tracks[trackId]->isMuted();
+		bool muted = tracks[trackId]->isMuted();
 		tracks[trackId]->Mute(!muted);
-		CButton *muteBtn = (CButton*)GetDlgItem(nID);
+		//CButton *muteBtn = (CButton*)GetDlgItem(nID);
 		//muteBtn-> change color here
 	}
 	UpdateButtons();
@@ -465,6 +465,8 @@ void CProbabilitySequencerDlg::OnMemoryButton(UINT nID)
 			tracks[i]->RestoreMuteState(index);
 	}	
 	storeMode = false;
+
+	UpdateButtons();
 	// change color of the Store Button here
 }
 

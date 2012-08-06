@@ -21,6 +21,7 @@ CTrackData::CTrackData(void)
 
 	noteOnSent = false;
 	vectorSizeUpdating = false;
+	Mute(false);
 }
 
 
