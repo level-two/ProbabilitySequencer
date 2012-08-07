@@ -56,45 +56,43 @@ CTrackData::~CTrackData(void)
 
 void CTrackData::SetSteps(int s)
 {
-	UpdateVectorSize(steps, s, trackLength, trackLength);
-	steps=s;
+	UpdateVectorSize(trackLength, s);
 }
 
 void CTrackData::SetTrackLength(int tl)
 {
-	UpdateVectorSize(steps, steps, trackLength, tl);
-	trackLength=tl;
+	UpdateVectorSize(tl, steps);
 }
 
 
-void CTrackData::UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int newLen)
+void CTrackData::UpdateVectorSize(int newLen, int newSteps)
 {
 	vectorSizeUpdating = true;
 
-	if (newLen>prevLen)
+	if (newLen>trackLength)
 	{
 		for (int i=values.size(); i<newLen*steps; i++)
 			values.push_back(0.0);
 	}
 
 	float dummy;
-	if (newSteps!=prevSteps)
+	if (newSteps!=steps)
 	{
-		if (/* newSteps>prevSteps && */isInt((float)newSteps/prevSteps))
+		if (isInt((float)newSteps/steps))
 		{
 			for (int j=values.size()-1; j>0; j--) {
-				values.insert(values.begin()+j, newSteps/prevSteps-1, 0.0);
+				values.insert(values.begin()+j, newSteps/steps-1, 0.0);
 			}
 
-			for (int i=0; i<newSteps/prevSteps-1; i++) {
+			for (int i=0; i<newSteps/steps-1; i++) {
 				values.push_back(0.0);
 			}
 		}
-		else if (/* newSteps<prevSteps && */isInt((float)prevSteps/newSteps))
+		else if (isInt((float)steps/newSteps))
 		{
 			int j=0;
 			while (j<values.size()) {
-				values.erase(values.begin()+j+1, values.begin()+j+prevSteps/newSteps);
+				values.erase(values.begin()+j+1, values.begin()+j+steps/newSteps);
 				j++;
 			}
 		}
@@ -103,7 +101,7 @@ void CTrackData::UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int 
 			// delete 
 			int j=0;
 			while (j<values.size()) {
-				values.erase(values.begin()+j+1, values.begin()+j+prevSteps);
+				values.erase(values.begin()+j+1, values.begin()+j+steps);
 				j++;
 			}
 
@@ -117,6 +115,9 @@ void CTrackData::UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int 
 			}
 		}
 	}
+
+	trackLength = newLen;
+	steps = newSteps;
 
 	vectorSizeUpdating = false;
 }
@@ -183,4 +184,78 @@ void CTrackData::Tick(unsigned long ticks)
 		message.push_back(volume); // velocity
 		midiOut->sendMessage( &message );
 	}
+}
+
+void CTrackData::ReadTrackFromFile(FILE *f)
+{
+	int newLen, newSteps;
+	fscanf(f, "Length: %d\n", &newLen);
+	fscanf(f, "Steps: %d\n", &newSteps);
+	UpdateVectorSize(newLen, newSteps);
+
+	fscanf(f, "Channel: %d\n", &channel);
+	fscanf(f, "Volume: %d\n", &volume);
+	fscanf(f, "Note: %d\n", &note);
+	fscanf(f, "NoteLength: %d\n", &noteLength);
+
+	char tn[255];
+	fscanf(f, "TrackName: %s\n", tn);
+	trackName = CString(tn);
+
+	int m;
+	fscanf(f, "Muted: %d\n", &m);
+	muted = m>0;
+	fscanf(f, "StoredMute:");
+	
+	for (int i=0; i<11; i++)
+	{
+		fscanf(f, "%d", &m);
+		muteStore[i] = m>0;
+	}
+	
+	int nValues;
+	fscanf(f, "\nDataSize: %d\n", &nValues);
+
+	if (nValues > trackLength*steps)
+	{
+		for (int i=trackLength*steps; i<nValues; i++)
+		{
+			values.push_back(0.0);
+		}
+	}
+
+	fscanf(f, "Data: ");
+	for(int i=0; i<nValues; i++)
+	{
+		float v;
+		fscanf(f, "%f", &v);
+		values[i] = v;
+	}
+
+	fscanf(f, "\n\n");
+
+}
+
+void CTrackData::SaveTrackToFile(FILE *f)
+{
+	fprintf(f, "Length: %d\n", trackLength);
+	fprintf(f, "Steps: %d\n", steps);
+	fprintf(f, "Channel: %d\n", channel);
+	fprintf(f, "Volume: %d\n", volume);
+	fprintf(f, "Note: %d\n", note);
+	fprintf(f, "NoteLength: %d\n", noteLength);
+	fprintf(f, "TrackName: %s\n", trackName.c_str());
+
+	fprintf(f, "Muted: %d\n", muted ? 1 : 0);
+	fprintf(f, "StoredMute: ");
+	
+	for (int i=0; i<11; i++)
+		fprintf(f, "%d ", muteStore[i] ? 1 : 0);
+	
+	fprintf(f, "\nDataSize: %d\n", values.size());
+	fprintf(f, "Data: ");
+	for(int i=0; i<values.size(); i++)
+		fprintf(f, "%.3f ", values[i]);
+
+	fprintf(f, "\n\n");
 }

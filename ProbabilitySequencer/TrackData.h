@@ -49,6 +49,8 @@ public:
 	float  GetValue(int pos) { if (pos<values.size()) return values[pos]; return 0; }
 	void   SetValue(int pos, float val) { if (pos<values.size()) values[pos]=val;}
 
+	void   ReadTrackFromFile(FILE *f);
+	void   SaveTrackToFile(FILE *f);
 	//..............
 	void Tick(unsigned long ticks);
 private:
@@ -66,7 +68,7 @@ private:
 	bool noteOnSent;
 
 	// private procedures
-	void UpdateVectorSize(int prevSteps, int newSteps, int prevLen, int newLen);
+	void UpdateVectorSize(int newLen, int newSteps);
 	bool isInt(float a);
 
 	// 

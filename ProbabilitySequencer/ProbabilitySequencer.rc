@@ -88,16 +88,16 @@ BEGIN
     LTEXT           "Length",IDC_STATIC,17,28,23,8
     EDITTEXT        IDC_STEP,115,26,26,14,ES_AUTOHSCROLL
     LTEXT           "Step",IDC_STATIC,96,28,16,8
-    EDITTEXT        IDC_NOTE,115,47,26,14,ES_AUTOHSCROLL
-    LTEXT           "Note",IDC_STATIC,95,49,16,8
-    EDITTEXT        IDC_VOLUME,189,28,26,14,ES_AUTOHSCROLL
-    LTEXT           "Volume",IDC_STATIC,161,30,24,8
+    EDITTEXT        IDC_NOTE,115,45,26,14,ES_AUTOHSCROLL
+    LTEXT           "Note",IDC_STATIC,95,47,16,8
+    EDITTEXT        IDC_VOLUME,189,26,26,14,ES_AUTOHSCROLL
+    LTEXT           "Volume",IDC_STATIC,160,29,24,8
     EDITTEXT        IDC_CHANNEL,47,44,26,14,ES_AUTOHSCROLL
     LTEXT           "Channel",IDC_STATIC,15,46,27,8
     EDITTEXT        IDC_TRACK_NAME,48,7,167,14,ES_AUTOHSCROLL
     LTEXT           "Name",IDC_STATIC,21,9,19,8
-    LTEXT           "Note len",IDC_STATIC,156,50,28,8
-    EDITTEXT        IDC_NOTE_LENGTH,189,47,26,14,ES_AUTOHSCROLL
+    LTEXT           "Note len",IDC_STATIC,157,47,28,8
+    EDITTEXT        IDC_NOTE_LENGTH,189,45,26,14,ES_AUTOHSCROLL
 END
 
 
@@ -130,7 +130,7 @@ BEGIN
     POPUP "File"
     BEGIN
         MENUITEM "New Session",                 ID_FILE_NEWSESSION
-        MENUITEM "Load Session...",             0
+        MENUITEM "Load Session...",             ID_FILE_LOADSESSION32778
         MENUITEM "Save Session...",             ID_FILE_SAVESESSION
     END
     MENUITEM "Settings...",                 ID_SETTINGS

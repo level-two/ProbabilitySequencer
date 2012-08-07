@@ -64,6 +64,8 @@ BEGIN_MESSAGE_MAP(CTrackEditDlg, CDialog)
 	ON_WM_LBUTTONUP()
 	ON_WM_RBUTTONDOWN()
 	ON_WM_RBUTTONUP()
+	ON_COMMAND(ID_FILE_LOADTRACK, &CTrackEditDlg::OnFileLoadtrack)
+	ON_COMMAND(ID_FILE_SAVETRACK, &CTrackEditDlg::OnFileSavetrack)
 END_MESSAGE_MAP()
 
 void CTrackEditDlg::SetEditedTrack(CTrackData *td)
@@ -275,4 +277,26 @@ void CTrackEditDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	mouseButtonPressed = false;
 	CDialog::OnRButtonUp(nFlags, point);
+}
+
+void CTrackEditDlg::OnFileLoadtrack()
+{
+	CString fn("./SavedTrack.pst");
+	FILE *f = fopen(fn,"r");
+	if (f == NULL) return; // error
+	editedTrack->ReadTrackFromFile(f);
+	fclose(f);
+
+	SetEditedTrack(editedTrack);
+	UpdateData(false);
+	RedrawWindow();
+}
+
+void CTrackEditDlg::OnFileSavetrack()
+{
+	CString fn("./SavedTrack.pst");
+	FILE *f = fopen(fn,"w");
+	if (f == NULL) return; // error
+	editedTrack->SaveTrackToFile(f);
+	fclose(f);
 }

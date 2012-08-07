@@ -67,4 +67,6 @@ public:
 	afx_msg void OnSettings();
 	afx_msg void OnFileNewsession();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnFileSavesession();
+	afx_msg void OnFileLoadsession();
 };

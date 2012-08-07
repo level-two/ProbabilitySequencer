@@ -101,16 +101,17 @@ BEGIN_MESSAGE_MAP(CProbabilitySequencerDlg, CDialog)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_WM_CREATE()
+	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_ADD_TRACK, &CProbabilitySequencerDlg::OnBnClickedAddTrack)
-	// TODO: add messages for all buttons
 	ON_CONTROL_RANGE(BN_CLICKED, baseBtnId+MuteBtnId, baseBtnId+LastBtnId, OnButton)
 	ON_CONTROL_RANGE(BN_CLICKED, IDC_MEMORY_1, IDC_MEMORY_0, OnMemoryButton)
-	ON_WM_CREATE()
 	ON_BN_CLICKED(IDC_STORE, &CProbabilitySequencerDlg::OnBnClickedStore)
 	ON_COMMAND(ID_SETTINGS, &CProbabilitySequencerDlg::OnSettings)
 	ON_COMMAND(ID_FILE_NEWSESSION, &CProbabilitySequencerDlg::OnFileNewsession)
-	ON_WM_TIMER()
+	ON_COMMAND(ID_FILE_SAVESESSION, &CProbabilitySequencerDlg::OnFileSavesession)
+	ON_COMMAND(ID_FILE_LOADSESSION32778, &CProbabilitySequencerDlg::OnFileLoadsession)
 END_MESSAGE_MAP()
 
 
@@ -546,4 +547,47 @@ void CProbabilitySequencerDlg::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	CDialog::OnTimer(nIDEvent);
+}
+
+void CProbabilitySequencerDlg::OnFileSavesession()
+{
+	CString fn("./SavedTracks.pst");
+	FILE *f = fopen(fn,"w");
+	if (f == NULL) return; // error
+
+	fprintf(f, "TrackNumber: %d\n\n", tracks.size());
+	for (int i=0; i<tracks.size(); i++)
+		tracks[i]->SaveTrackToFile(f);
+
+	fclose(f);
+}
+
+void CProbabilitySequencerDlg::OnFileLoadsession()
+{
+	CString fn("./SavedTracks.pst");
+
+	FILE *f = fopen(fn,"r");
+	if (f == NULL) return; // error
+
+	while(tracks.size()>0)
+	{
+		int id = tracks[0]->GetTrackId();
+		DeleteTrack(id);
+		DeleteButtons(id);
+	}
+
+	int num;
+	fscanf(f, "TrackNumber: %d\n\n", &num);
+
+	for (int i=0; i<num; i++)
+	{
+		int newId = GetNextId();
+		AddTrack(newId);
+		AddButtons(FindButtonIndexWithId(IDC_ADD_TRACK), newId);
+
+		tracks[i]->ReadTrackFromFile(f);
+	}
+	fclose(f);
+
+	UpdateButtons();
 }
