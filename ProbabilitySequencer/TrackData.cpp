@@ -141,9 +141,10 @@ void CTrackData::Tick(unsigned long ticks)
 	bool shouldSendNoteOn  = false;
 
 	float stepLength = (float)TICKS_PER_BEAT/steps;
-	int tick = ticks - stepLength*floor(ticks/stepLength);
+	float tickPrev = (ticks-1) - stepLength*floor((ticks-1)/stepLength);
+	float tickNext = ticks - stepLength*floor(ticks/stepLength);
 
-	if (tick == 0)
+	if (tickPrev<=0 && tickNext>=0)
 	{
 		int pos = ticks % (TICKS_PER_BEAT*trackLength);
 		int noteIndex = floor(pos/stepLength);
@@ -157,9 +158,11 @@ void CTrackData::Tick(unsigned long ticks)
 		}
 	}
 
-	if ((tick==noteLength) || (tick==0 && stepLength==noteLength))
+	if (noteOnSent)
 	{
-		if (noteOnSent)
+		if (tickPrev<=noteLength && tickNext>=noteLength)
+			shouldSendNoteOff = true;
+		if (tickPrev<=0 && tickNext>=0 && stepLength==noteLength)
 			shouldSendNoteOff = true;
 	}
 
