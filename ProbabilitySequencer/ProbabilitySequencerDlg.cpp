@@ -551,8 +551,15 @@ void CProbabilitySequencerDlg::OnTimer(UINT_PTR nIDEvent)
 
 void CProbabilitySequencerDlg::OnFileSavesession()
 {
-	CString fn("./SavedTracks.pst");
-	FILE *f = fopen(fn,"w");
+	TCHAR szFilters[]= _T("Session Files (*.pss)|*.pss|All Files (*.*)|*.*||");
+
+	CFileDialog fileDlg(FALSE, _T(".pss"), _T(".pss"), OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, szFilters);
+	if(fileDlg.DoModal() != IDOK)
+		return;
+
+	CString pathName = fileDlg.GetPathName();
+
+	FILE *f = fopen(pathName,"w");
 	if (f == NULL) return; // error
 
 	fprintf(f, "TrackNumber: %d\n\n", tracks.size());
@@ -564,9 +571,15 @@ void CProbabilitySequencerDlg::OnFileSavesession()
 
 void CProbabilitySequencerDlg::OnFileLoadsession()
 {
-	CString fn("./SavedTracks.pst");
+	TCHAR szFilters[]= _T("Session Files (*.pss)|*.pss|All Files (*.*)|*.*||");
 
-	FILE *f = fopen(fn,"r");
+	CFileDialog fileDlg(TRUE, _T(".pss"), _T("*.pss"), OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, szFilters);
+	if(fileDlg.DoModal() != IDOK)
+		return;
+
+	CString pathName = fileDlg.GetPathName();
+
+	FILE *f = fopen(pathName,"r");
 	if (f == NULL) return; // error
 
 	while(tracks.size()>0)

@@ -269,6 +269,16 @@ void CTrackEditDlg::OnRButtonDown(UINT nFlags, CPoint point)
 	{
 		mouseButtonPressed = true;
 		editedPos = -1;
+
+		float length = editedTrack->GetTrackLength();
+		float steps = editedTrack->GetSteps();
+		int pos = length*steps*(point.x - X)/(XX-X)+0.5;	
+
+		float value = (float)(YY - point.y)/(YY-Y);
+		editedTrack->SetValue(floor(pos+0.5),value);
+
+		int r = RADIUS;
+		InvalidateRect(CRect(X-r,Y-r,XX+r,YY+r));
 	}
 	CDialog::OnRButtonDown(nFlags, point);
 }
@@ -281,8 +291,16 @@ void CTrackEditDlg::OnRButtonUp(UINT nFlags, CPoint point)
 
 void CTrackEditDlg::OnFileLoadtrack()
 {
-	CString fn("./SavedTrack.pst");
-	FILE *f = fopen(fn,"r");
+
+	TCHAR szFilters[]= _T("Track Files (*.pst)|*.pst|All Files (*.*)|*.*||");
+
+	CFileDialog fileDlg(TRUE, _T(".pst"), _T("*.pst"), OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, szFilters);
+	if(fileDlg.DoModal() != IDOK)
+		return;
+
+	CString pathName = fileDlg.GetPathName();
+
+	FILE *f = fopen(pathName,"r");
 	if (f == NULL) return; // error
 	editedTrack->ReadTrackFromFile(f);
 	fclose(f);
@@ -294,8 +312,16 @@ void CTrackEditDlg::OnFileLoadtrack()
 
 void CTrackEditDlg::OnFileSavetrack()
 {
-	CString fn("./SavedTrack.pst");
-	FILE *f = fopen(fn,"w");
+	TCHAR szFilters[]= _T("Track Files (*.pst)|*.pst|All Files (*.*)|*.*||");
+
+	std::string name = editedTrack->GetTrackName() + ".pst";
+	CFileDialog fileDlg(FALSE, _T(".pst"), _T(name.c_str()), OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, szFilters);
+	if(fileDlg.DoModal() != IDOK)
+		return;
+
+	CString pathName = fileDlg.GetPathName();
+
+	FILE *f = fopen(pathName,"w");
 	if (f == NULL) return; // error
 	editedTrack->SaveTrackToFile(f);
 	fclose(f);
